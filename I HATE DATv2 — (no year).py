@@ -2,10 +2,10 @@ import mysql.connector
 
 # Connect to the database
 cnx = mysql.connector.connect(
-    host="192.168.56.103",
-    user="perepi",
-    password="pastanaga",
-    database="eleccions"
+    host="xxx.xxx.xxx.xxx",
+    user="xxx",
+    password="xxxxx",
+    database="xxxxxx"
 )
 cursor = cnx.cursor()
 
