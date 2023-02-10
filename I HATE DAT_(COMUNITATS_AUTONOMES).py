@@ -17,11 +17,15 @@ with open("07021911.DAT", "r") as file:
         data = line.strip()
         # Extract the values from the data string
         nom = data[14:64].strip().replace("\"", "'")
-        codi_ine = data[11:13].replace("\"", "'")
-        query = "INSERT INTO comunitats_autonomes (nom, codi_ine) VALUES (%s, %s)"
-        values = (nom, codi_ine)
-        cursor.execute(query, values)
+        codi_ine_prov = data[11:13].replace("\"", "'")
+        codi_ine = data[9:11]
 
+        if codi_ine != "99" and codi_ine_prov == "99":
+                query = "INSERT INTO comunitats_autonomes (nom, codi_ine) VALUES (%s, %s)"
+                values = (nom, codi_ine)
+                cursor.execute(query, values)
+        else:
+            pass
 # Commit the changes
 cnx.commit()
 
