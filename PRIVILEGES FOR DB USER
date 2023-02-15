@@ -8,3 +8,6 @@ mysql> SHOW GRANTS FOR 'johnDoe';
 | GRANT USAGE ON *.* TO `johnDoe`                                  |
 | GRANT ALL PRIVILEGES ON `db1`.* TO `johnDoe`                     |
 +------------------------------------------------------------------+
+
+
+SET GLOBAL sql_mode = '';
