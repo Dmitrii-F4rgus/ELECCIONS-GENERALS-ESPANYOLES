@@ -239,8 +239,6 @@ cnx.close()
 ```python
 
 ```
-Abans de fer el insert de la taula persones tenim que fer alguns canvis a la base de dades (servidor) per aixpo tenim que seguir les instruccions del fitxer "PRIVILEGES FOR DB USER"
-
 
 ### Insert Persones
 
