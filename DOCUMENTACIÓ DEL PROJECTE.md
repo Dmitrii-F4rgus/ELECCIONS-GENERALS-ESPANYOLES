@@ -196,7 +196,42 @@ cnx.close()
 ### Insert Candidatures
 
 ```python
+import mysql.connector
 
+# Connect to the database
+cnx = mysql.connector.connect(
+# localhost="192.168.56.103",
+    host="10.94.255.163",
+    user="perepi",
+    password="pastanaga",
+    database="eleccions"
+)
+cursor = cnx.cursor()
+
+# Open the file
+with open("03021911.DAT", "r") as file:
+    # Read each line of the file
+    for line in file:
+        # Strip leading and trailing whitespace from the line
+        data = line.strip()
+        # Extract the values from the data string
+        eleccio_id = 1
+        codi_candidatura = data[8:14].replace("\"", "'")
+        nom_curt = data[14:64].strip().replace("\"", "'")
+        nom_llarg = data[64:214].strip().replace("\"", "'")
+        codi_acumulacio_provincia = data[214:220].replace("\"", "'")
+        codi_acumulacio_ca = data[220:226].replace("\"", "'")
+        codi_acumulario_nacional = data[226:232].replace("\"", "'")
+        query = "INSERT INTO candidatures (eleccio_id, codi_candidatura, nom_curt, nom_llarg, codi_acumulacio_provincia, codi_acumulacio_ca, codi_acumulario_nacional) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        values = (eleccio_id, codi_candidatura, nom_curt, nom_llarg, codi_acumulacio_provincia, codi_acumulacio_ca, codi_acumulario_nacional)
+        cursor.execute(query, values)
+
+# Commit the changes
+cnx.commit()
+
+# Close the cursor and connection
+cursor.close()
+cnx.close()
 ```
 
 ### Insert Vots_candidatures_ca
@@ -205,6 +240,29 @@ cnx.close()
 
 ```
 Abans de fer el insert de la taula persones tenim que fer alguns canvis a la base de dades (servidor) per aixpo tenim que seguir les instruccions del fitxer "PRIVILEGES FOR DB USER"
+
+### fitxer PRIVILEGES FOR DB USER
+
+```python
+#ABANS DE PERSONES#
+# user = usuario amb permisos d'administrador
+# host = % (todos los rangos de IPs)
+mysql -u root -p
+UPDATE mysql.user SET Super_Priv='Y' WHERE user='johnDoe' AND host='%';
+FLUSH PRIVILEGES;
+mysql> SHOW GRANTS FOR 'johnDoe';
++------------------------------------------------------------------+
+| Grants for johnDoe                                               |
++------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `johnDoe`                                  |
+| GRANT ALL PRIVILEGES ON `db1`.* TO `johnDoe`                     |
++------------------------------------------------------------------+
+#RENICIAR EL SERVIDOR
+REBOOT!!!!
+
+SET GLOBAL sql_mode = '';
+```
+
 
 ### Insert Persones
 
