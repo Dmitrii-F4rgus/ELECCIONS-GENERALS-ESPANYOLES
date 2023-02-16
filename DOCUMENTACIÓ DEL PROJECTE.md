@@ -241,28 +241,6 @@ cnx.close()
 ```
 Abans de fer el insert de la taula persones tenim que fer alguns canvis a la base de dades (servidor) per aixpo tenim que seguir les instruccions del fitxer "PRIVILEGES FOR DB USER"
 
-### fitxer PRIVILEGES FOR DB USER
-
-```python
-#ABANS DE PERSONES#
-# user = usuario amb permisos d'administrador
-# host = % (todos los rangos de IPs)
-mysql -u root -p
-UPDATE mysql.user SET Super_Priv='Y' WHERE user='johnDoe' AND host='%';
-FLUSH PRIVILEGES;
-mysql> SHOW GRANTS FOR 'johnDoe';
-+------------------------------------------------------------------+
-| Grants for johnDoe                                               |
-+------------------------------------------------------------------+
-| GRANT USAGE ON *.* TO `johnDoe`                                  |
-| GRANT ALL PRIVILEGES ON `db1`.* TO `johnDoe`                     |
-+------------------------------------------------------------------+
-#RENICIAR EL SERVIDOR
-REBOOT!!!!
-
-SET GLOBAL sql_mode = '';
-```
-
 
 ### Insert Persones
 
@@ -390,17 +368,3 @@ SET GLOBAL sql_mode = '';
         FROM eleccions_municipis);
     
 
-# APARTAT 3
-
-# **APARTAT 5**
-
-**1.5 Llei d’Hondt**
-
-La fórmula D'Hondt es el procediment matematic que s’utilitza per distribuir els escons entre les candidatures a partir dels vots
-
-EXEMPLE: municipi amb 9 regidors a repartir i 10 candidatures, i en el qual s’hane emès 1400 vots vàlids,de la seguent manera:
-
-
-En cas d'empat en algun quocient, s'emporta l'escó la candidatura que té més vots en total.
-
-PROGRAMA QUE MOSTRA EL NUMERO D’ESCONS
