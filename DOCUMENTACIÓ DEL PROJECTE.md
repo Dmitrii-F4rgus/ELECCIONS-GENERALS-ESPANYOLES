@@ -1,4 +1,4 @@
-# DOCUMENTACIÓnn DEL PROJECTE
+# DOCUMENTACIÓ DEL PROJECTE
 
 # Configuració i instal·lació de paquets per connectar Python a la base de dades.
 
