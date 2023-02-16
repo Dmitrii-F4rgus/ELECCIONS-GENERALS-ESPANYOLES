@@ -20,6 +20,8 @@ Si tot a anat correctament amb les comandes especifiques es podria fer la comuni
 
 ## Comandes python de la importació
 
+### Insert de Eleccions
+
 La primera taula que hem d’omplenar per poder començar amb els INSERTS és la taula “eleccions”.
 
 ```python
@@ -57,6 +59,46 @@ cnx.close()
 
 Ara ja tenim el primer INSERT dintre de la base de dades. La dada “eleccio_id” era necessària per poder continuar ja que fa de FOREIGN KEY en altres taules. 
 
+### Insert Candidatures
+
+```python
+import mysql.connector
+
+# Connect to the database
+cnx = mysql.connector.connect(
+# localhost="192.168.56.103",
+    host="10.94.255.163",
+    user="perepi",
+    password="pastanaga",
+    database="eleccions"
+)
+cursor = cnx.cursor()
+
+# Open the file
+with open("03021911.DAT", "r") as file:
+    # Read each line of the file
+    for line in file:
+        # Strip leading and trailing whitespace from the line
+        data = line.strip()
+        # Extract the values from the data string
+        eleccio_id = 1
+        codi_candidatura = data[8:14].replace("\"", "'")
+        nom_curt = data[14:64].strip().replace("\"", "'")
+        nom_llarg = data[64:214].strip().replace("\"", "'")
+        codi_acumulacio_provincia = data[214:220].replace("\"", "'")
+        codi_acumulacio_ca = data[220:226].replace("\"", "'")
+        codi_acumulario_nacional = data[226:232].replace("\"", "'")
+        query = "INSERT INTO candidatures (eleccio_id, codi_candidatura, nom_curt, nom_llarg, codi_acumulacio_provincia, codi_acumulacio_ca, codi_acumulario_nacional) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        values = (eleccio_id, codi_candidatura, nom_curt, nom_llarg, codi_acumulacio_provincia, codi_acumulacio_ca, codi_acumulario_nacional)
+        cursor.execute(query, values)
+
+# Commit the changes
+cnx.commit()
+
+# Close the cursor and connection
+cursor.close()
+cnx.close()
+```
 
 ### Insert de comunitats_autònomes
 
@@ -145,6 +187,11 @@ cnx.commit()
 cursor.close()
 cnx.close()
 ```
+### Insert Persones
+
+```python
+
+```
 
 ### Insert Municipis
 
@@ -193,45 +240,10 @@ cnx.close()
 
 ```
 
-### Insert Candidatures
+### Insert Candidats(NF)
 
 ```python
-import mysql.connector
 
-# Connect to the database
-cnx = mysql.connector.connect(
-# localhost="192.168.56.103",
-    host="10.94.255.163",
-    user="perepi",
-    password="pastanaga",
-    database="eleccions"
-)
-cursor = cnx.cursor()
-
-# Open the file
-with open("03021911.DAT", "r") as file:
-    # Read each line of the file
-    for line in file:
-        # Strip leading and trailing whitespace from the line
-        data = line.strip()
-        # Extract the values from the data string
-        eleccio_id = 1
-        codi_candidatura = data[8:14].replace("\"", "'")
-        nom_curt = data[14:64].strip().replace("\"", "'")
-        nom_llarg = data[64:214].strip().replace("\"", "'")
-        codi_acumulacio_provincia = data[214:220].replace("\"", "'")
-        codi_acumulacio_ca = data[220:226].replace("\"", "'")
-        codi_acumulario_nacional = data[226:232].replace("\"", "'")
-        query = "INSERT INTO candidatures (eleccio_id, codi_candidatura, nom_curt, nom_llarg, codi_acumulacio_provincia, codi_acumulacio_ca, codi_acumulario_nacional) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        values = (eleccio_id, codi_candidatura, nom_curt, nom_llarg, codi_acumulacio_provincia, codi_acumulacio_ca, codi_acumulario_nacional)
-        cursor.execute(query, values)
-
-# Commit the changes
-cnx.commit()
-
-# Close the cursor and connection
-cursor.close()
-cnx.close()
 ```
 
 ### Insert Vots_candidatures_ca
@@ -240,13 +252,13 @@ cnx.close()
 
 ```
 
-### Insert Persones
+### Insert Vots_candidatures_prov
 
 ```python
 
 ```
 
-### Insert Candidats(NF)
+### Insert Vots_candidatures_mun
 
 ```python
 
