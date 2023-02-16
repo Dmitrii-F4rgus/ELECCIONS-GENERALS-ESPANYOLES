@@ -322,12 +322,12 @@ SELECT pro.nom AS provincia, vot.vots AS num_vots
            INNER JOIN candidats can1 ON can.candidatura_id = can1.candidatura_id
            INNER JOIN persones per ON can1.persona_id = per.persona_id
 
-1. Quins municipis hi ha per cada provincia:
+3. Quins municipis hi ha per cada provincia:
 SELECT p.nom AS nom_provincia, m.nom AS nom_municipi
      FROM provincies p
      INNER JOIN municipis m ON m.provincia_id = p.provincia_id;
 
-1. Saber els vots valids i l’any de cada elecció
+4. Saber els vots valids i l’any de cada elecció
 
       SELECT e.eleccio_id,e.any,m.vots_valids
            FROM eleccions e
@@ -335,7 +335,7 @@ SELECT p.nom AS nom_provincia, m.nom AS nom_municipi
 
       WHERE vots_valids IS NULL;
 
-1. Quin es el id del primer candidat dels candidats obtinguts per provincia 
+5. Quin es el id del primer candidat dels candidats obtinguts per provincia 
 SELECT c.candidat_id,p.candidats_obtinguts
 FROM vots_candidatures_prov p
 RIGHT JOIN candidats c ON p.candidatura_id = c.candidatura_id
