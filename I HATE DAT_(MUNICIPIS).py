@@ -1,9 +1,9 @@
 import mysql.connector
-
+print("START")
 # Connect to the database
 cnx = mysql.connector.connect(
-#    host="192.168.56.103",
-    host="10.94.255.163",
+    host="192.168.56.103",
+#    host="10.94.255.163",
     user="perepi",
     password="pastanaga",
     database="eleccions"
@@ -18,14 +18,13 @@ with open("05021911.DAT", "r") as file:
         data = line.strip()
         # Extract the values from the data string
         nom = data[18:118].replace(" ", "")
-        codi_ine_mu = data[13:16].replace("\"", "'")
-        codi_ine_pr = data[11:13].replace("\"", "'")
-        districte = data[16:18].replace("\"", "'")
-        IHATEDATSYKA=cursor.execute(f"SELECT provincia_id FROM provincies WHERE codi_ine = '{codi_ine_pr}'")# Select
-        IHATEDATSYKA = cursor.fetchone()
-        
+        codi_ine_mu = data[13:16]
+        codi_ine_pr = data[11:13]
+        districte = data[16:18]
+        provincia_id=cursor.execute(f"SELECT provincia_id FROM provincies WHERE codi_ine = '{codi_ine_pr}'")# Select
+        provincia_id = cursor.fetchone()        
         query = "INSERT INTO municipis (nom, codi_ine, provincia_id, districte) VALUES (%s, %s, %s, %s)"
-        values = (nom, codi_ine_mu, IHATEDATSYKA[0], districte)
+        values = (nom, codi_ine_mu, provincia_id[0], districte)
         cursor.execute(query, values)
         
         
@@ -36,3 +35,4 @@ cnx.commit()
 # Close the cursor and connection
 cursor.close()
 cnx.close()
+print("DONE")
