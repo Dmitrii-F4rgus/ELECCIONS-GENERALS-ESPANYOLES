@@ -280,7 +280,7 @@ SET GLOBAL sql_mode = '';
 
 ## CONSULTES SIMPLES
 
-1. Volem saber els noms dels municipis que començin per A:
+1. /* Volem saber els noms dels municipis que començin per A:*/
 SELECT nom
   FROM municipis
  WHERE nom RLIKE 'A';
@@ -308,7 +308,7 @@ WHERE nom='Andalucia';
 
 ### CONSULTES INNER JOIN
 
-1. /* contar el numero de votos por provincia */
+1. contar el numero de votos por provincia
  
         SELECT pro.nom AS provincia, vot.vots AS num_vots
         FROM provincies pro 
