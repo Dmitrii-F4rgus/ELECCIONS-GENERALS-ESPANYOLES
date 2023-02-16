@@ -281,6 +281,7 @@ SET GLOBAL sql_mode = '';
 ## CONSULTES SIMPLES
 
 1.  Volem saber els noms dels municipis que començin per A:
+
         SELECT nom
         FROM municipis
         WHERE nom RLIKE 'A';
@@ -347,46 +348,46 @@ SET GLOBAL sql_mode = '';
 
 ## SUBCONSULTES
 
-1. Obté la eleccio_id, el municipi_id i el num de vots vàlids de les eleccions municipals amb més vots en blanc
+1. Obté la eleccio_id, el municipi_id i el num de vots vàlids de les eleccions municipals amb més vots en blanc:
     
-    SELECT eleccio_id, municipi_id, vots_valids
-    FROM eleccions_municipis
-    WHERE vots_blanc = (SELECT MAX(vots_blanc)
-    FROM eleccions_municipis);
+        SELECT eleccio_id, municipi_id, vots_valids
+        FROM eleccions_municipis
+        WHERE vots_blanc = (SELECT MAX(vots_blanc)
+        FROM eleccions_municipis);
     
-2. Visualitzar l'id de candidat i el nom del canditat més jove
+2. Visualitzar l'id de candidat i el nom del canditat més jove:
     
-    SELECT c.candidat_id, p.nom
-    FROM candidats c
-    INNER JOIN persones p ON p.persona_id
-    WHERE p.data_naixement=(SELECT MAX(data_naixement)
-    FROM persones
-    GROUP BY data_naixement);
+        SELECT c.candidat_id, p.nom
+        FROM candidats c
+        INNER JOIN persones p ON p.persona_id
+        WHERE p.data_naixement=(SELECT MAX(data_naixement)
+        FROM persones
+        GROUP BY data_naixement);
     
-3. Volem saber el número de vots de la canditatura(comunitat autonoma) amb el candidat més vell
+3. Volem saber el número de vots de la canditatura(comunitat autonoma) amb el candidat més vell:
     
-    SELECT v.vots
-    FROM vots_candidatures_ca v
-    INNER JOIN candidats c ON c.candidatura_id=v.candidatura_id
-    INNER JOIN persones p ON c.persona_id=p.persona_id
-    WHERE p.data_naixement=(SELECT MIN(data_naixement)
-    FROM persones);
+        SELECT v.vots
+        FROM vots_candidatures_ca v
+        INNER JOIN candidats c ON c.candidatura_id=v.candidatura_id
+        INNER JOIN persones p ON c.persona_id=p.persona_id
+        WHERE p.data_naixement=(SELECT MIN(data_naixement)
+        FROM persones);
     
-4. Volem saber els candidats que són més joves que el que marca la mitja d'edat
+4. Volem saber els candidats que són més joves que el que marca la mitja d'edat:
     
-    SELECT *
-    FROM persones
-    WHERE data_naixement>(SELECT AVG(data_naixement)
-    FROM persones);
+        SELECT *
+        FROM persones
+        WHERE data_naixement>(SELECT AVG(data_naixement)
+        FROM persones);
     
-5. Obté el nom del municipi, el seu id, el numero de vots a candidatures i el total de vots emeoss del municipi que hagi tingut més vots nuls
+5. Obté el nom del municipi, el seu id, el numero de vots a candidatures i el total de vots emeoss del municipi que hagi tingut més vots nuls:
     
     
-    SELECT m.nom, e.municipi_id, e.vots_candidatures, e.vots_emesos
-    FROM eleccions_municipis e
-    INNER JOIN municipis m ON e.municipi_id=m.municipi_id
-    WHERE vots_nuls=(SELECT MAX(vots_nuls)
-    FROM eleccions_municipis);
+        SELECT m.nom, e.municipi_id, e.vots_candidatures, e.vots_emesos
+        FROM eleccions_municipis e
+        INNER JOIN municipis m ON e.municipi_id=m.municipi_id
+        WHERE vots_nuls=(SELECT MAX(vots_nuls)
+        FROM eleccions_municipis);
     
 
 # APARTAT 3
