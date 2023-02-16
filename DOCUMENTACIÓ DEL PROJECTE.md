@@ -309,15 +309,14 @@ WHERE nom='Andalucia';
 ### CONSULTES INNER JOIN
 
 1. /* contar el numero de votos por provincia */
-SELECT pro.nom AS provincia, vot.vots AS num_vots 
-
-         FROM provincies pro 
-
-         INNER JOIN vots_candidatures_prov vot ON pro.provincia_id = vot.provincia_id 
+ 
+        SELECT pro.nom AS provincia, vot.vots AS num_vots
+        FROM provincies pro 
+        INNER JOIN vots_candidatures_prov vot ON pro.provincia_id = vot.provincia_id 
 
 2. */ nombres de los candidatos de cada candidatura */
-      SELECT can.nom_curt,per.nom AS nom_candidat 
 
+           SELECT can.nom_curt,per.nom AS nom_candidat 
            FROM candidatures can
            INNER JOIN candidats can1 ON can.candidatura_id = can1.candidatura_id
            INNER JOIN persones per ON can1.persona_id = per.persona_id
