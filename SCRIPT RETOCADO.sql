@@ -1,4 +1,5 @@
 
+DROP DATABASE eleccions;
 
 -- -----------------------------------------------------
 -- Schema eleccions
@@ -94,7 +95,7 @@ CREATE TABLE eleccions_municipis (
 -- -----------------------------------------------------
 CREATE TABLE candidatures (
   candidatura_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  eleccio_id TINYINT UNSIGNED NOT NULL,
+  eleccio_id TINYINT UNSIGNED,
   codi_candidatura CHAR(6) NULL,
   nom_curt VARCHAR(50) NULL COMMENT 'Sigles de la candidatura',
   nom_llarg VARCHAR(150) NULL COMMENT 'Nom llarg de la candidatura (denominació)',
