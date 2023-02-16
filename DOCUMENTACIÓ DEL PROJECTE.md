@@ -57,7 +57,6 @@ cnx.close()
 
 Ara ja tenim el primer INSERT dintre de la base de dades. La dada “eleccio_id” era necessària per poder continuar ja que fa de FOREIGN KEY en altres taules. 
 
-![Untitled](DOCUMENTACIO%CC%81%20DEL%20PROJECTE%2005b0b349049f487c972a1684d62e745e/Untitled.png)
 
 ### Insert de comunitats_autònomes
 
@@ -190,31 +189,31 @@ cnx.close()
 
 ### Insert Eleccions_municipis
 
-```powershell
+```python
 
 ```
 
 ### Insert Candidatures
 
-```powershell
+```python
 
 ```
 
 ### Insert Vots_candidatures_ca
 
-```powershell
+```python
 
 ```
 
 ### Insert Persones
 
-```powershell
+```python
 
 ```
 
 ### Insert Candidats(NF)
 
-```powershell
+```python
 
 ```
 
