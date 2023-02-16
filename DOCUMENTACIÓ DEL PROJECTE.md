@@ -280,65 +280,70 @@ SET GLOBAL sql_mode = '';
 
 ## CONSULTES SIMPLES
 
-1. /* Volem saber els noms dels municipis que començin per A:*/
-SELECT nom
-  FROM municipis
- WHERE nom RLIKE 'A';
+1.  Volem saber els noms dels municipis que començin per A:
+        SELECT nom
+        FROM municipis
+        WHERE nom RLIKE 'A';
 
-1. Volem saber el total de persones que hi han amb sexe masculi:
-SELECT sexe, COUNT() AS total
-    FROM persones
-WHERE sexe='M'
-GROUP BY sexe;
-**
-2. Consulta per saber les eleccions que es varen fer abans del 2000:
-**SELECT any 
-  FROM eleccions
-WHERE any>2000;
-**
-3. Volem saber la suma de vots totals i agrupar-ho per provincia id:
-**SELECT provincia_id, SUM(vots) as vots_totals
-    FROM vots_candidatures_prov
-GROUP BY provincia_id;
-**
-4. Consultar el id i el nom de la comunitat autonoma de Andalucia:
-SELECT comunitat_aut_id,nom 
-  FROM comunitats_autonomes
-WHERE nom='Andalucia';
+2. Volem saber el total de persones que hi han amb sexe masculi:
+
+        SELECT sexe, COUNT() AS total
+        FROM persones
+        WHERE sexe='M'
+        GROUP BY sexe;
+
+3. Consulta per saber les eleccions que es varen fer abans del 2000:
+
+        SELECT any 
+        FROM eleccions
+        WHERE any>2000;
+
+4. Volem saber la suma de vots totals i agrupar-ho per provincia id:
+
+        SELECT provincia_id, SUM(vots) as vots_totals
+        FROM vots_candidatures_prov
+        GROUP BY provincia_id;
+
+5. Consultar el id i el nom de la comunitat autonoma de Andalucia:
+
+        SELECT comunitat_aut_id,nom 
+        FROM comunitats_autonomes
+        WHERE nom='Andalucia';
 
 ### CONSULTES INNER JOIN
 
-1. contar el numero de votos por provincia
+1. contar el numero de votos por provincia:
  
         SELECT pro.nom AS provincia, vot.vots AS num_vots
         FROM provincies pro 
         INNER JOIN vots_candidatures_prov vot ON pro.provincia_id = vot.provincia_id 
 
-2. */ nombres de los candidatos de cada candidatura */
+2.  nombres de los candidatos de cada candidatura:
 
-           SELECT can.nom_curt,per.nom AS nom_candidat 
-           FROM candidatures can
-           INNER JOIN candidats can1 ON can.candidatura_id = can1.candidatura_id
-           INNER JOIN persones per ON can1.persona_id = per.persona_id
+        SELECT can.nom_curt,per.nom AS nom_candidat 
+        FROM candidatures can
+        INNER JOIN candidats can1 ON can.candidatura_id = can1.candidatura_id
+        INNER JOIN persones per ON can1.persona_id = per.persona_id
 
 3. Quins municipis hi ha per cada provincia:
-SELECT p.nom AS nom_provincia, m.nom AS nom_municipi
-     FROM provincies p
-     INNER JOIN municipis m ON m.provincia_id = p.provincia_id;
 
-4. Saber els vots valids i l’any de cada elecció
+        SELECT p.nom AS nom_provincia, m.nom AS nom_municipi
+        FROM provincies p
+        INNER JOIN municipis m ON m.provincia_id = p.provincia_id;
 
-      SELECT e.eleccio_id,e.any,m.vots_valids
-           FROM eleccions e
-      LEFT JOIN eleccions_municipis m ON e.eleccio_id = m.eleccio_id
+4. Saber els vots valids i l’any de cada elecció:
 
-      WHERE vots_valids IS NULL;
+        SELECT e.eleccio_id,e.any,m.vots_valids
+        FROM eleccions e
+        LEFT JOIN eleccions_municipis m ON e.eleccio_id = m.eleccio_id
+        WHERE vots_valids IS NULL;
 
-5. Quin es el id del primer candidat dels candidats obtinguts per provincia 
-SELECT c.candidat_id,p.candidats_obtinguts
-FROM vots_candidatures_prov p
-RIGHT JOIN candidats c ON p.candidatura_id = c.candidatura_id
-LIMIT 1;
+5. Quin es el id del primer candidat dels candidats obtinguts per provincia: 
+
+        SELECT c.candidat_id,p.candidats_obtinguts
+        FROM vots_candidatures_prov p
+        RIGHT JOIN candidats c ON p.candidatura_id = c.candidatura_id
+        LIMIT 1;
 
 ## SUBCONSULTES
 
