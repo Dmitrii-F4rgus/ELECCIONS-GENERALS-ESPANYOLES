@@ -204,6 +204,7 @@ cnx.close()
 ```python
 
 ```
+Abans de fer el insert de la taula persones tenim que fer alguns canvis a la base de dades (servidor) per aixpo tenim que seguir les instruccions del fitxer "PRIVILEGES FOR DB USER"
 
 ### Insert Persones
 
@@ -336,7 +337,6 @@ La fórmula D'Hondt es el procediment matematic que s’utilitza per distribuir 
 
 EXEMPLE: municipi amb 9 regidors a repartir i 10 candidatures, i en el qual s’hane emès 1400 vots vàlids,de la seguent manera:
 
-![Llei_dHondt.png](DOCUMENTACIO%CC%81%20DEL%20PROJECTE/Llei_dHondt.png)
 
 En cas d'empat en algun quocient, s'emporta l'escó la candidatura que té més vots en total.
 
