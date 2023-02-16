@@ -1,3 +1,5 @@
+#ABANS DE PERSONES#
+
 mysql -u root -p
 UPDATE mysql.user SET Super_Priv='Y' WHERE user='johnDoe' AND host='%';
 FLUSH PRIVILEGES;
