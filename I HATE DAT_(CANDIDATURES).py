@@ -23,8 +23,12 @@ with open("03021911.DAT", "r") as file:
         codi_acumulacio_provincia = data[214:220]
         codi_acumulacio_ca = data[220:226]
         codi_acumulario_nacional = data[226:232]
-        query = "INSERT INTO candidatures (codi_candidatura, nom_curt, nom_llarg, codi_acumulacio_provincia, codi_acumulacio_ca, codi_acumulario_nacional) VALUES (%s, %s, %s, %s, %s, %s)"
-        values = (codi_candidatura, nom_curt, nom_llarg, codi_acumulacio_provincia, codi_acumulacio_ca, codi_acumulario_nacional)
+        any = data[2:6]
+        mes = data[6:8]
+        eleccio_id=cursor.execute(f"SELECT eleccio_id FROM eleccions WHERE any = '{any}' AND mes = '{mes}'")# Select
+        eleccio_id = cursor.fetchone()
+        query = "INSERT INTO candidatures (eleccio_id, codi_candidatura, nom_curt, nom_llarg, codi_acumulacio_provincia, codi_acumulacio_ca, codi_acumulario_nacional) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        values = (eleccio_id[0], codi_candidatura, nom_curt, nom_llarg, codi_acumulacio_provincia, codi_acumulacio_ca, codi_acumulario_nacional)
         cursor.execute(query, values)
 
 # Commit the changes
