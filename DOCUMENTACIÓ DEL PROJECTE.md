@@ -237,30 +237,266 @@ cnx.close()
 ### Insert Eleccions_municipis
 
 ```python
+import mysql.connector
+print("START")
+# Connect to the database
+cnx = mysql.connector.connect(
+    host="192.168.56.103",
+#    host="10.94.255.163",
+    user="perepi",
+    password="pastanaga",
+    database="eleccions"
+)
+cursor = cnx.cursor()
 
+# Open the file
+with open("05021911.DAT", "r") as file:
+    # Read each line of the file
+    for line in file:
+        # Strip leading and trailing whitespace from the line
+        data = line.strip()
+        # Extract the values from the data string
+        num_meses = data[136:141]
+        cens = data[141:149]
+        vots_candidatures = data[205:213]
+        vots_candidatures = int(vots_candidatures)
+        vots_blanc = data[189:197]
+        vots_blanc = int(vots_blanc)
+        vots_nuls = data[197:205]
+        vots_nuls = int(vots_nuls)
+        vots_emesos = vots_candidatures + vots_blanc + vots_nuls
+        vots_emesos = int(vots_emesos)
+        vots_valids = vots_emesos - vots_nuls
+        vots_valids = int(vots_valids)
+        codi_ine_mu = data[13:16]
+        codi_ine_prov = data[11:13].replace("\"", "'")
+        any = data[2:6]
+        mes = data[6:8]
+        codi_dstrc = data[16:18]
+        provincia_id=cursor.execute(f"SELECT provincia_id FROM provincies WHERE codi_ine = '{codi_ine_prov}'")# Select
+        provincia_id = cursor.fetchone()
+        municipi_id=cursor.execute(f"SELECT municipi_id FROM municipis WHERE codi_ine = '{codi_ine_mu}' AND provincia_id = '{provincia_id[0]}' AND districte = '{codi_dstrc}'")# Select
+        municipi_id = cursor.fetchone()
+        eleccio_id=cursor.execute(f"SELECT eleccio_id FROM eleccions WHERE any = '{any}' AND mes = '{mes}'")# Select
+        eleccio_id = cursor.fetchone()
+        query = "INSERT INTO eleccions_municipis (eleccio_id, municipi_id, num_meses, cens, vots_emesos, vots_valids, vots_candidatures, vots_blanc, vots_nuls) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        values = (eleccio_id[0], municipi_id[0], num_meses, cens, vots_emesos, vots_valids, vots_candidatures, vots_blanc, vots_nuls)
+        cursor.execute(query, values)
+
+# Commit the changes
+cnx.commit()
+
+# Close the cursor and connection
+cursor.close()
+cnx.close()
+print("DONE")
 ```
 
-### Insert Candidats(NF)
+### Insert Candidats
 
 ```python
+import mysql.connector
+print("START")
+# Connect to the database
+cnx = mysql.connector.connect(
+    host="192.168.56.103",
+#    host="10.94.255.163",
+    user="perepi",
+    password="pastanaga",
+    database="eleccions"
+)
+cursor = cnx.cursor()
 
+# Open the file
+with open("04021911.DAT", "r") as file:
+    # Read each line of the file
+    for line in file:
+        # Strip leading and trailing whitespace from the line
+        data = line.strip()
+        # Extract the values from the data string
+        num_ordre = data[21:24]
+        tipus = data[24:25]
+        codi_candidatura = data[15:21]
+        codi_ine_prov = data[9:11]
+        nom = data[25:50].strip().replace("\"", "")
+        cog1 = data[50:75].strip().replace("\"", "")
+        cog2 = data[75:100].strip().replace("\"", "")
+        sexe = data[100:101].strip().replace("\"", "")
+        cursor.execute(f"SELECT candidatura_id FROM candidatures WHERE codi_candidatura = '{codi_candidatura}'")
+        candidatura_id = cursor.fetchone()
+        cursor.execute(f"SELECT provincia_id FROM provincies WHERE codi_ine = '{codi_ine_prov}'")
+        provincia_id = cursor.fetchone()
+        cursor.execute(f"SELECT persona_id FROM persones WHERE nom LIKE '{nom}' AND cog1 LIKE '{cog1}' AND cog2 LIKE '{cog2}' AND sexe LIKE '{sexe}'")
+        persona_id = cursor.fetchone()
+        query = "INSERT INTO candidats (candidatura_id, provincia_id, persona_id, num_ordre, tipus) VALUES (%s, %s, %s, %s, %s)"
+        values = (candidatura_id[0], provincia_id[0], persona_id[0], num_ordre, tipus)
+        cursor.execute(query, values)
+
+# Commit the changes
+cnx.commit()
+
+
+# Close the cursor and connection
+cursor.close()
+cnx.close()
+print("DONE")
 ```
 
 ### Insert Vots_candidatures_ca
 
 ```python
+import mysql.connector
+print("START")
+# Connect to the database
+cnx = mysql.connector.connect(
+    host="192.168.56.103",
+#    host="10.94.255.163",
+    user="perepi",
+    password="pastanaga",
+    database="eleccions"
+)
+cursor = cnx.cursor()
+# Open the file
+with open("08021911.DAT", "r") as file:
+    # Read each line of the file
+    for line in file:
+        # Strip leading and trailing whitespace from the line
+        data = line.strip()
+        # Extract the values from the data string
+        vots = data[20:28]
+        codi_ine_ca = data[9:11]
+        codi_candidatura = data[14:20]
+        codi_ine_prov = data[11:13]
+        comunitat_aut_id= cursor.execute(f"SELECT comunitat_aut_id FROM comunitats_autonomes WHERE codi_ine = '{codi_ine_ca}'")
+        comunitat_aut_id = cursor.fetchone()
+        candidatura_id = cursor.execute(f"SELECT candidatura_id FROM candidatures WHERE codi_candidatura = '{codi_candidatura}'")
+        candidatura_id = cursor.fetchone()
+        if codi_ine_prov == "99" and codi_ine_ca != "99" :
+           query = "INSERT INTO vots_candidatures_ca (comunitat_autonoma_id, candidatura_id, vots) VALUES (%s, %s, %s)"
+           values = (comunitat_aut_id[0],candidatura_id[0], vots)
+           cursor.execute(query, values)
+        else:
+            pass
 
+# Commit the changes
+cnx.commit()
+
+# Close the cursor and connection
+cursor.close()
+cnx.close()
+print("DONE")
 ```
 
 ### Insert Vots_candidatures_prov
 
 ```python
+import mysql.connector
+print("START")
+# Connect to the database
+cnx = mysql.connector.connect(
+    host="192.168.56.103",
+#    host="10.94.255.163",
+    user="perepi",
+    password="pastanaga",
+    database="eleccions"
+)
+cursor = cnx.cursor()
 
+
+
+
+
+# Open the file
+with open("08021911.DAT", "r") as file:
+    # Read each line of the file
+    for line in file:
+        # Strip leading and trailing whitespace from the line
+        data = line.strip()
+        # Extract the values from the data string
+        vots = data[20:28].replace("\"", "'")
+        codi_ine_pro = data[11:13].replace("\"", "'")
+        codi_candidatura = data[14:20].replace("\"", "'")
+        candidats_obtinguts = data[28:33].replace("\"", "'") 
+        provincia_id = cursor.execute(f"SELECT provincia_id FROM provincies WHERE codi_ine = '{codi_ine_pro}'")# Select
+        provincia_id = cursor.fetchone()
+        candidatura_id = cursor.execute(f"SELECT candidatura_id FROM candidatures WHERE codi_candidatura = '{codi_candidatura}'")# Select
+        candidatura_id = cursor.fetchone()
+        if codi_ine_pro != "99": 
+            query = "INSERT INTO vots_candidatures_prov (provincia_id, candidatura_id, vots, candidats_obtinguts) VALUES (%s, %s, %s, %s)"
+            values = (provincia_id[0], candidatura_id[0], vots, candidats_obtinguts)
+            cursor.execute(query, values)
+        else:
+            pass
+
+# Commit the changes
+cnx.commit()
+
+# Close the cursor and connection
+cursor.close()
+cnx.close()
+print("DONE")
 ```
 
 ### Insert Vots_candidatures_mun
 
 ```python
+import mysql.connector
+
+print("START")
+
+# Connect to the database
+cnx = mysql.connector.connect(
+    host="192.168.56.103",
+    user="perepi",
+    password="pastanaga",
+    database="eleccions"
+)
+cursor = cnx.cursor()
+dubl_dict= {}
+# Open the file
+with open("06021911.DAT", "r") as file:
+    # Read each line of the file
+    for line in file:
+        # Strip leading and trailing whitespace from the line
+        data = line.strip()
+        # Extract the values from the data string
+        vots = data[22:30].replace("\"", "'")
+        codi_ine_mun = data[11:14].replace("\"", "'")
+        codi_candidatura = data[16:22].replace("\"", "'")
+        candidats_obtinguts = data[28:33].replace("\"", "'")
+        any = data[2:6]
+        mes = data[6:8]
+        eleccio_id = cursor.execute(f"SELECT eleccio_id FROM eleccions WHERE any = '{any}' AND mes = '{mes}'")
+        eleccio_id = cursor.fetchone()
+        cursor.nextset()
+        municipi_id = cursor.execute(f"SELECT municipi_id FROM municipis WHERE codi_ine = '{codi_ine_mun}'")
+        municipi_id = cursor.fetchone()
+        cursor.nextset()
+        candidatura_id = cursor.execute(f"SELECT candidatura_id FROM candidatures WHERE codi_candidatura = '{codi_candidatura}' and eleccio_id = '{eleccio_id[0]}'")
+        candidatura_id = cursor.fetchone()
+        cursor.nextset()
+        key_form = f"{eleccio_id[0]}{municipi_id[0]}{candidatura_id[0]}"
+# Add the vots to the corresponding key in the dubl_dict dictionary
+        key_form = f"{eleccio_id[0]}{municipi_id[0]}{candidatura_id[0]}"
+        if key_form in dubl_dict:
+            dubl_dict[key_form] += int(vots)
+            query = "UPDATE vots_candidatures_mun SET vots = %s WHERE eleccio_id = %s AND municipi_id = %s AND candidatura_id = %s"
+            values = (dubl_dict[key_form], eleccio_id[0], municipi_id[0], candidatura_id[0])
+            cursor.execute(query, values)
+        else:
+            dubl_dict[key_form] = int(vots)
+            query = "INSERT INTO vots_candidatures_mun (eleccio_id, municipi_id, candidatura_id, vots) VALUES (%s, %s, %s, %s)"
+            values = (eleccio_id[0], municipi_id[0], candidatura_id[0], vots)
+            cursor.execute(query, values)
+        
+
+# Commit the changes
+cnx.commit()
+
+# Close the cursor and connection
+cursor.close()
+cnx.close()
+print("DONE")
 
 ```
 
