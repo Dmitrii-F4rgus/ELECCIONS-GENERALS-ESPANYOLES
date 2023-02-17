@@ -10,7 +10,7 @@ cnx = mysql.connector.connect(
     database="eleccions"
 )
 cursor = cnx.cursor()
-dubl_list= ["START"]
+dubl_dict= {}
 # Open the file
 with open("06021911.DAT", "r") as file:
     # Read each line of the file
@@ -33,17 +33,20 @@ with open("06021911.DAT", "r") as file:
         candidatura_id = cursor.execute(f"SELECT candidatura_id FROM candidatures WHERE codi_candidatura = '{codi_candidatura}' and eleccio_id = '{eleccio_id[0]}'")
         candidatura_id = cursor.fetchone()
         cursor.nextset()
-        dubl = f"{eleccio_id[0]} {municipi_id[0]} {candidatura_id[0]}"
-        dubl_list.append(dubl)
-        if dubl_list.count(dubl) < 2 :
+        key_form = f"{eleccio_id[0]}{municipi_id[0]}{candidatura_id[0]}"
+# Add the vots to the corresponding key in the dubl_dict dictionary
+        key_form = f"{eleccio_id[0]}{municipi_id[0]}{candidatura_id[0]}"
+        if key_form in dubl_dict:
+            dubl_dict[key_form] += int(vots)
+            query = "UPDATE vots_candidatures_mun SET vots = %s WHERE eleccio_id = %s AND municipi_id = %s AND candidatura_id = %s"
+            values = (dubl_dict[key_form], eleccio_id[0], municipi_id[0], candidatura_id[0])
+            cursor.execute(query, values)
+        else:
+            dubl_dict[key_form] = int(vots)
             query = "INSERT INTO vots_candidatures_mun (eleccio_id, municipi_id, candidatura_id, vots) VALUES (%s, %s, %s, %s)"
             values = (eleccio_id[0], municipi_id[0], candidatura_id[0], vots)
             cursor.execute(query, values)
-        else:
-            query = "INSERT INTO vots_candidatures_mun (eleccio_id, municipi_id, candidatura_id, vots) VALUES (%s, %s, %s, %s)"
-            values = (eleccio_id[0], municipi_id[0], candidatura_id[0], vots)
-            print(values)
-            pass
+        
 
 # Commit the changes
 cnx.commit()
