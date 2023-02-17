@@ -307,12 +307,13 @@ cnx.close()
         FROM provincies pro 
         INNER JOIN vots_candidatures_prov vot ON pro.provincia_id = vot.provincia_id 
 
-2.  noms i cognoms dels candidatos de cada candidatura:
+2.  Obtenir informacio de les tables eleccions_municipis,municipis i eleccions que no tinguin vots en blanc:
 
-        SELECT can.nom_curt,per.nom AS nom_candidat, per.cog1 AS cognom
-        FROM candidatures can
-        INNER JOIN candidats can1 ON can.candidatura_id = can1.candidatura_id
-        INNER JOIN persones per ON can1.persona_id = per.persona_id
+        SELECT * 
+        FROM eleccions_municipis
+        RIGHT JOIN municipis ON eleccions_municipis.municipi_id = municipis.municipi_id
+        RIGHT JOIN eleccions ON eleccions_municipis.eleccio_id = eleccions.eleccio_id
+        WHERE eleccions_municipis.vots_blanc = 0;
 
 3. Volem separar per municipis i per provincia, quantes meses i vots emesos hi ha respectivament::
 
