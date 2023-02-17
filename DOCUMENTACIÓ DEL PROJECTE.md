@@ -301,38 +301,39 @@ cnx.close()
 
 ### CONSULTES INNER JOIN
 
-1. contar el numero de votos por provincia:
+1. contar el numero de vots per provincia:
  
         SELECT pro.nom AS provincia, vot.vots AS num_vots
         FROM provincies pro 
         INNER JOIN vots_candidatures_prov vot ON pro.provincia_id = vot.provincia_id 
 
-2.  nombres de los candidatos de cada candidatura:
+2.  noms i cognoms dels candidatos de cada candidatura:
 
-        SELECT can.nom_curt,per.nom AS nom_candidat 
+        SELECT can.nom_curt,per.nom AS nom_candidat, per.cog1 AS cognom
         FROM candidatures can
         INNER JOIN candidats can1 ON can.candidatura_id = can1.candidatura_id
         INNER JOIN persones per ON can1.persona_id = per.persona_id
 
-3. Quins municipis hi ha per cada provincia:
+3. Volem separar per municipis i per provincia, quantes meses i vots emesos hi ha respectivament::
 
-        SELECT p.nom AS nom_provincia, m.nom AS nom_municipi
+        SELECT p.nom AS nom_provincia, m.nom AS nom_municipi, em.num_meses AS meses, em.vots_emesos AS vots_emesos
         FROM provincies p
-        INNER JOIN municipis m ON m.provincia_id = p.provincia_id;
+        INNER JOIN municipis m ON m.provincia_id = p.provincia_id
+        INNER JOIN eleccions_municipis em ON m.municipi_id = em.municipi_id;
 
-4. Saber els vots valids i l’any de cada elecció:
+4. Volem saber l’id del municipi i el nom amb més de 50 vots en blanc:
 
-        SELECT e.eleccio_id,e.any,m.vots_valids
-        FROM eleccions e
-        LEFT JOIN eleccions_municipis m ON e.eleccio_id = m.eleccio_id
-        WHERE vots_valids IS NULL;
+        SELECT m.municipi_id, m.nom
+        FROM municipis m
+        LEFT JOIN eleccions_municipis e ON m.municipi_id=e.municipi_id
+        WHERE e.vots_blanc > 50;
 
-5. Quin es el id del primer candidat dels candidats obtinguts per provincia: 
+5. Quin es el nom de la candidatura i el numero de candidats obtinguts: 
 
-        SELECT c.candidat_id,p.candidats_obtinguts
+        SELECT c.nom_curt, p.candidats_obtinguts
         FROM vots_candidatures_prov p
-        RIGHT JOIN candidats c ON p.candidatura_id = c.candidatura_id
-        LIMIT 1;
+        LEFT JOIN candidatures c ON p.candidatura_id = c.candidatura_id
+;
 
 ## SUBCONSULTES
 
@@ -352,21 +353,21 @@ cnx.close()
         FROM persones
         GROUP BY data_naixement);
     
-3. Volem saber el número de vots de la canditatura(comunitat autonoma) amb el candidat més vell:
+3. Obtenir el nom de la província amb més vots:
     
-        SELECT v.vots
-        FROM vots_candidatures_ca v
-        INNER JOIN candidats c ON c.candidatura_id=v.candidatura_id
-        INNER JOIN persones p ON c.persona_id=p.persona_id
-        WHERE p.data_naixement=(SELECT MIN(data_naixement)
-        FROM persones);
+        SELECT p.nom, v.vots
+        FROM provincies p
+        INNER JOIN vots_candidatures_prov v ON v.provincia_id=p.provincia_id
+        WHERE v.vots = (SELECT MAX(vots)
+        FROM vots_candidatures_prov);
     
-4. Volem saber els candidats que són més joves que el que marca la mitja d'edat:
+4. Volem saber el nom de la comunitat autònoma amb major número d’escons:
     
-        SELECT *
-        FROM persones
-        WHERE data_naixement>(SELECT AVG(data_naixement)
-        FROM persones);
+        SELECT c.nom, p.num_escons
+        FROM comunitats_autonomes
+        INNER JOIN provincies p ON c.comunitat_aut_id=p.comunitat_aut_id
+        WHERE v.num_escons=(SELECT MAX(num_escons)
+        FROM provincies);
     
 5. Obté el nom del municipi, el seu id, el numero de vots a candidatures i el total de vots emeoss del municipi que hagi tingut més vots nuls:
     
