@@ -554,7 +554,7 @@ print("DONE")
 
 ## CONSULTES SIMPLES
 
-1.  Volem saber els noms dels municipis que començin per A:
+1.  Volem saber els noms dels municipis que contengin per A:
 
         SELECT nom
         FROM municipis
@@ -562,7 +562,7 @@ print("DONE")
 
 2. Volem saber el total de persones que hi han amb sexe masculi:
 
-        SELECT sexe, COUNT() AS total
+        SELECT sexe, COUNT(*) AS total
         FROM persones
         WHERE sexe='M'
         GROUP BY sexe;
@@ -571,7 +571,7 @@ print("DONE")
 
         SELECT any 
         FROM eleccions
-        WHERE any>2000;
+        WHERE any<2000;
 
 4. Volem saber la suma de vots totals i agrupar-ho per provincia id:
 
@@ -579,11 +579,11 @@ print("DONE")
         FROM vots_candidatures_prov
         GROUP BY provincia_id;
 
-5. Consultar el id i el nom de la comunitat autonoma de Andalucia:
+5. Consultar el id i el nom de la província amb codi ine 015:
 
-        SELECT comunitat_aut_id,nom 
-        FROM comunitats_autonomes
-        WHERE nom='Andalucia';
+        SELECT provincia_id ,nom 
+        FROM provincies
+        WHERE codi_ine=015;
 
 ### CONSULTES INNER JOIN
 
@@ -593,15 +593,14 @@ print("DONE")
         FROM provincies pro 
         INNER JOIN vots_candidatures_prov vot ON pro.provincia_id = vot.provincia_id 
 
-2.  Obtenir informacio de les tables eleccions_municipis,municipis i eleccions que no tinguin vots en blanc:
+2.  Nombres de los candidatos de cada candidatura
 
-        SELECT * 
-        FROM eleccions_municipis
-        RIGHT JOIN municipis ON eleccions_municipis.municipi_id = municipis.municipi_id
-        RIGHT JOIN eleccions ON eleccions_municipis.eleccio_id = eleccions.eleccio_id
-        WHERE eleccions_municipis.vots_blanc = 0;
+        SELECT can.nom_curt,per.nom AS nom_candidat 
+        FROM candidatures can
+        INNER JOIN candidats can1 ON can.candidatura_id = can1.candidatura_id
+        INNER JOIN persones per ON can1.persona_id = per.persona_id;
 
-3. Volem separar per municipis i per provincia, quantes meses i vots emesos hi ha respectivament::
+3. Volem separar per municipis i per provincia, quantes meses i vots emesos hi ha respectivament:
 
         SELECT p.nom AS nom_provincia, m.nom AS nom_municipi, em.num_meses AS meses, em.vots_emesos AS vots_emesos
         FROM provincies p
@@ -631,7 +630,7 @@ print("DONE")
         WHERE vots_blanc = (SELECT MAX(vots_blanc)
         FROM eleccions_municipis);
     
-2. Visualitzar l'id de candidat i el nom del canditat més jove:
+2. Volem saber el nom del municipi amb més vots emesos:
     
         SELECT c.candidat_id, p.nom
         FROM candidats c
