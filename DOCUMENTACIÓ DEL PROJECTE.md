@@ -187,6 +187,9 @@ cnx.commit()
 cursor.close()
 cnx.close()
 ```
+
+Amb aquest codi extraeiem els valors de les variables nom,cog1,cog2,sexe,data_naixament dni. Despres verifiquem si la data de naixament es correcte tal que aixi "0000-00-00" i si el nom complet no esta duplicat. Si es compleixen totes aquestes condicions insertas els valors a la tabla persones. També hi habia un registre que te cometes("") i per tant habiem de fer que el programa no agafessi les cometes.
+
 ### Insert Persones
 
 ```python
@@ -242,6 +245,7 @@ cnx.close()
 print("DONE")
 
 ```
+El següent codi es per insertar valors a la tabla municipis. No es hem posat municipi_id perque es una clau primaria autoIncremental. Després fiquem les variables i hem de fer 1 SELECT per obtenir el codi_ine de provincies
 
 ### Insert Municipis
 
